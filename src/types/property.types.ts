@@ -3,6 +3,9 @@ export interface Property {
   sellerId: string;
   title: string;
   description: string;
+  city?: string;
+  state?: string;
+  salePrice?: number;
   type: 'apartment' | 'house' | 'villa' | 'plot' | 'commercial';
   price: number;
   area: number;
