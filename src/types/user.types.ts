@@ -5,6 +5,8 @@ export interface User {
   phone?: string;
   name: string;
   role: Role;
+  location?: string;
+  bio?: string;
   isVerified: boolean;
   profileImage?: string;
   createdAt: string;
