@@ -50,6 +50,12 @@ export const Navbar = () => {
           <div className="hidden md:flex items-center gap-1">
             <Link to={ROUTES.PROPERTIES} className="px-4 py-2 text-sm font-medium text-white/80 rounded-lg hover:-translate-y-1 hover:text-transparent hover:bg-clip-text hover:bg-gradient-to-r hover:from-secondary hover:from-10% hover:to-primary hover:to-40% active:scale-95 transition-all duration-300" id="nav-properties">Properties</Link>
             <Link to="/auctions" className="px-4 py-2 text-sm font-medium text-white/80 rounded-lg hover:-translate-y-1 hover:text-transparent hover:bg-clip-text hover:bg-gradient-to-r hover:from-secondary hover:from-10% hover:to-primary hover:to-40% active:scale-95 transition-all duration-300" id="nav-auctions">Live Auctions</Link>
+            <a href="/#faq" onClick={(e) => {
+              if (location.pathname === '/') {
+                e.preventDefault();
+                document.getElementById('faq')?.scrollIntoView({ behavior: 'smooth' });
+              }
+            }} className="px-4 py-2 text-sm font-medium text-white/80 rounded-lg hover:-translate-y-1 hover:text-transparent hover:bg-clip-text hover:bg-gradient-to-r hover:from-secondary hover:from-10% hover:to-primary hover:to-40% active:scale-95 transition-all duration-300" id="nav-faq">FAQ</a>
           </div>
 
           {/* Auth Actions */}
