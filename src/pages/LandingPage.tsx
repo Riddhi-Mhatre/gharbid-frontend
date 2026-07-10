@@ -1,11 +1,62 @@
-import { Link } from 'react-router-dom';
-import { ArrowRight, Shield, Gavel, MessageCircle, TrendingUp, Home, ChevronDown, Building, MapPin, Landmark } from 'lucide-react';
+import { Link, useLocation } from 'react-router-dom';
+import { ArrowRight, Shield, Gavel, MessageCircle, TrendingUp, Home, ChevronDown, Building, MapPin, Landmark, Plus } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { getProperties } from '../services/propertyService';
 import { PropertyCard } from '../components/properties/PropertyCard';
 import { Loader } from '../components/common/Loader';
 import { ROUTES } from '../utils/constants';
 import { useAuthStore } from '../store/authStore';
+import { useState, useEffect } from 'react';
+
+const FAQS = [
+  { question: "What is GharBid?", answer: "GharBid is an all-in-one virtual real estate operating system that lets buyers and sellers manage properties, verify legal documents, and participate in live auctions from a single platform — replacing the need for multiple brokers." },
+  { question: "How does GharBid work?", answer: "Sellers list verified properties. Buyers can browse, express interest, or participate in live English auctions to bid on properties securely." },
+  { question: "Can I manage properties remotely with GharBid?", answer: "Yes, you can browse, bid, and negotiate on properties from anywhere in the world." },
+  { question: "Is there a free trial?", answer: "Browsing properties and creating an account is completely free. Registration is required to place bids." },
+  { question: "How secure is my data?", answer: "We use enterprise-grade encryption to ensure all your documents, messages, and bids are completely secure." },
+  { question: "What integrations do you support?", answer: "We support direct payment integrations via Razorpay, real-time map integrations, and secure document storage via AWS." },
+  { question: "Is there a mobile app?", answer: "Currently, our platform is fully mobile-responsive and accessible via any browser. A dedicated app is in development." }
+];
+
+const FaqItem = ({ question, answer, isOpen, onToggle }: { question: string; answer: string; isOpen: boolean; onToggle: () => void }) => {
+  return (
+    <div 
+      className={`border rounded-2xl mb-4 transition-all duration-300 overflow-hidden ${
+        isOpen 
+          ? 'border-primary/50 bg-[#0a0a0a] shadow-[0_0_20px_rgba(255,215,0,0.1)]' 
+          : 'border-white/5 bg-[#0a0a0a]/80 hover:border-white/10 hover:bg-[#111]'
+      }`}
+    >
+      <button 
+        className="flex w-full items-center justify-between text-left focus:outline-none p-5 md:p-6 group" 
+        onClick={onToggle}
+      >
+        <span className="font-display font-medium text-lg md:text-xl text-white/90 group-hover:text-white transition-colors">
+          {question}
+        </span>
+        <div className={`w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center flex-shrink-0 ml-4 transition-all duration-300 ${
+          isOpen 
+            ? 'bg-primary text-black shadow-[0_0_15px_rgba(255,215,0,0.5)]' 
+            : 'bg-white/5 text-white/50 group-hover:bg-white/10 group-hover:text-white/80'
+        }`}>
+          <Plus size={20} className={`transform transition-transform duration-300 ${isOpen ? 'rotate-45' : 'rotate-0'}`} />
+        </div>
+      </button>
+      <div 
+        className={`grid transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] ${
+          isOpen ? 'grid-rows-[1fr] opacity-100' : 'grid-rows-[0fr] opacity-0'
+        }`}
+      >
+        <div className="overflow-hidden">
+          <div className="p-5 md:p-6 pt-0 mt-2 border-t border-white/5 relative">
+            <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-primary/30 to-transparent"></div>
+            <p className="text-white/60 md:text-lg leading-relaxed">{answer}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 const STATS = [
   { label: 'Verified Properties', value: '500+' },
@@ -23,6 +74,16 @@ const STEPS = [
 
 export default function LandingPage() {
   const { isAuthenticated, user } = useAuthStore();
+  const location = useLocation();
+  const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(null);
+
+  useEffect(() => {
+    if (location.hash === '#faq') {
+      setTimeout(() => {
+        document.getElementById('faq')?.scrollIntoView({ behavior: 'smooth' });
+      }, 100);
+    }
+  }, [location]);
   const { data: properties, isLoading } = useQuery({
     queryKey: ['properties', 'featured'],
     queryFn: () => getProperties({ status: 'approved' }),
@@ -37,7 +98,7 @@ export default function LandingPage() {
         {/* Dynamic Glowing Blobs */}
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80vw] h-[80vw] sm:w-[60vw] sm:h-[60vw] max-w-[800px] max-h-[800px] bg-primary/10 blur-[80px] sm:blur-[120px] rounded-full pointer-events-none animate-pulse" style={{ animationDuration: '4s' }} />
         <div className="absolute top-1/4 right-1/4 w-[60vw] h-[60vw] sm:w-[40vw] sm:h-[40vw] max-w-[500px] max-h-[500px] bg-secondary/10 blur-[80px] sm:blur-[100px] rounded-full pointer-events-none animate-pulse" style={{ animationDuration: '6s', animationDelay: '1s' }} />
-        <div className="absolute bottom-1/4 left-1/4 w-[50vw] h-[50vw] sm:w-[30vw] sm:h-[30vw] max-w-[400px] max-h-[400px] bg-purple-500/10 blur-[80px] sm:blur-[100px] rounded-full pointer-events-none animate-pulse" style={{ animationDuration: '5s', animationDelay: '2s' }} />
+        <div className="absolute bottom-1/4 left-1/4 w-[50vw] h-[50vw] sm:w-[30vw] sm:h-[30vw] max-w-[400px] max-h-[400px] bg-yellow-500/5 blur-[80px] sm:blur-[100px] rounded-full pointer-events-none animate-pulse" style={{ animationDuration: '5s', animationDelay: '2s' }} />
         
         {/* Decorative Background Icons */}
         <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
@@ -91,31 +152,33 @@ export default function LandingPage() {
       {/* Partition 2: Stats & How it Works */}
       <div className="min-h-screen flex flex-col justify-center">
         {/* Stats */}
-        <section className="py-12 px-4 border-y border-dark-border bg-dark-card/50">
-          <div className="max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+        <section className="py-12 md:py-20 px-4 relative z-10">
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-primary/5 to-transparent pointer-events-none" />
+          <div className="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8 text-center">
             {STATS.map(stat => (
-              <div key={stat.label}>
-                <p className="text-3xl font-display font-bold text-gradient-gold">{stat.value}</p>
-                <p className="text-muted text-sm mt-1">{stat.label}</p>
+              <div key={stat.label} className="bg-[#0a0a0a]/60 backdrop-blur-sm border border-white/5 rounded-2xl p-6 md:p-8 hover:border-primary/30 hover:bg-[#111] transition-all duration-300 group shadow-lg">
+                <p className="text-4xl md:text-5xl font-display font-bold text-gradient-gold drop-shadow-[0_0_15px_rgba(255,215,0,0.3)] group-hover:scale-105 transition-transform">{stat.value}</p>
+                <p className="text-muted text-sm md:text-base mt-2 md:mt-3 font-medium tracking-wide uppercase">{stat.label}</p>
               </div>
             ))}
           </div>
         </section>
 
         {/* How it Works */}
-        <section className="py-16 px-6 md:px-8 flex-1 flex flex-col justify-center">
-          <div className="max-w-5xl mx-auto w-full">
-            <h2 className="section-title text-center mb-2">How <span className="text-transparent bg-clip-text bg-gradient-to-r from-secondary to-primary drop-shadow-[0_0_10px_rgba(0,128,128,0.3)]">GharBid</span> Works</h2>
-            <p className="section-subtitle text-center mb-12">A simple, transparent process from discovery to ownership</p>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 place-items-center">
+        <section className="py-16 md:py-24 px-6 md:px-8 flex-1 flex flex-col justify-center relative z-10">
+          <div className="max-w-6xl mx-auto w-full">
+            <h2 className="section-title text-center mb-3">How <span className="text-transparent bg-clip-text bg-gradient-to-r from-secondary to-primary drop-shadow-[0_0_15px_rgba(0,128,128,0.4)]">GharBid</span> Works</h2>
+            <p className="section-subtitle text-center mb-16 text-lg max-w-2xl mx-auto">A simple, transparent process from property discovery to secure ownership.</p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8 place-items-center">
               {STEPS.map((step, i) => (
-                <div key={step.title} className="card p-6 text-center group border-b-2 border-b-transparent hover:border-b-primary hover:-translate-y-2 hover:shadow-[0_0_30px_rgba(255,215,0,0.15)] active:scale-95 active:-translate-y-1 transition-all duration-300 bg-dark-card relative w-full max-w-[340px] sm:max-w-none">
-                  <div className="w-12 h-12 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center mx-auto mb-4 group-hover:bg-primary/20 transition-colors">
-                    <step.icon size={22} className="text-primary" />
+                <div key={step.title} className="p-8 text-center group border border-white/5 rounded-3xl hover:border-primary/50 hover:-translate-y-3 hover:shadow-[0_10px_40px_-10px_rgba(255,215,0,0.2)] bg-gradient-to-b from-[#0f0f0f] to-black relative w-full h-full flex flex-col items-center transition-all duration-500">
+                  <div className="absolute inset-0 bg-gradient-to-b from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity rounded-3xl pointer-events-none"></div>
+                  <div className="w-16 h-16 rounded-2xl bg-[#111] border border-white/10 shadow-inner flex items-center justify-center mb-6 group-hover:bg-primary/20 group-hover:border-primary/30 transition-all duration-500 group-hover:scale-110">
+                    <step.icon size={28} className="text-primary drop-shadow-[0_0_8px_rgba(255,215,0,0.5)]" />
                   </div>
-                  <div className="text-xs text-primary font-bold mb-1">Step {i + 1}</div>
-                  <h3 className="font-semibold text-sm mb-2">{step.title}</h3>
-                  <p className="text-muted text-xs leading-relaxed">{step.desc}</p>
+                  <div className="text-xs text-primary font-bold tracking-widest uppercase mb-3 px-3 py-1 bg-primary/10 rounded-full border border-primary/20">Step {i + 1}</div>
+                  <h3 className="font-bold text-lg mb-3 text-white/90 group-hover:text-white transition-colors">{step.title}</h3>
+                  <p className="text-white/50 text-sm leading-relaxed">{step.desc}</p>
                 </div>
               ))}
             </div>
@@ -166,6 +229,28 @@ export default function LandingPage() {
             </div>
           </section>
         )}
+        {/* FAQ Section */}
+        <section id="faq" className="py-24 px-6 md:px-8 relative bg-black scroll-mt-16 overflow-hidden border-t border-white/5">
+          {/* Subtle Background Glow for FAQ */}
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-primary/5 blur-[100px] rounded-full pointer-events-none"></div>
+          
+          <div className="max-w-3xl mx-auto relative z-10">
+            <h2 className="text-3xl md:text-5xl font-display font-bold text-center mb-4 text-white">Frequently Asked Questions</h2>
+            <p className="text-center text-white/50 text-lg mb-12 max-w-xl mx-auto">Everything you need to know about the platform and how it works.</p>
+            
+            <div className="flex flex-col">
+              {FAQS.map((faq, index) => (
+                <FaqItem 
+                  key={index} 
+                  question={faq.question} 
+                  answer={faq.answer} 
+                  isOpen={openFaqIndex === index}
+                  onToggle={() => setOpenFaqIndex(openFaqIndex === index ? null : index)}
+                />
+              ))}
+            </div>
+          </div>
+        </section>
       </div>
     </div>
   );
