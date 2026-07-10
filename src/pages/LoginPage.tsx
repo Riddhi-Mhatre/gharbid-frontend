@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { 
@@ -14,7 +14,6 @@ import { Eye, EyeOff, User, Building2, X, KeyRound, Sparkles, ArrowLeft } from '
 import { ROUTES } from '../utils/constants';
 
 export default function LoginPage() {
-  const navigate = useNavigate();
   const [view, setView] = useState<'login' | 'forgot-password' | 'reset-password'>('login');
   const [role, setRole] = useState<'buyer' | 'seller'>('buyer');
   const [showPassword, setShowPassword] = useState(false);
