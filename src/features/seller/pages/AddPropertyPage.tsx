@@ -54,7 +54,7 @@ export default function AddPropertyPage() {
     images: [] as string[],
   });
 
-  const { data: propertyData, isLoading: isPropertyLoading } = useQuery({
+  const { data: propertyData} = useQuery({
     queryKey: ['property', editId],
     queryFn: () => getProperty(editId!),
     enabled: isEditMode,
